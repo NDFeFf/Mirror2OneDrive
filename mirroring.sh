@@ -4,24 +4,14 @@
 sudo apt-get update
 sudo apt-get install -y wget rclone
 
-# Создание конфигурационного файла rclone
-cat <<EOF > rclone.conf
-[onedrive]
-type = onedrive
-token = {"access_token":"", "token_type":"Bearer","refresh_token":"", "expiry":""}
-drive_id = ""
-drive_type = personal
-EOF
+# Создание начальной конфигурации rclone
+rclone config create onedrive onedrive
 
-# Инструкция для пользователя
-echo "rclone установлен и частично настроен. Вам необходимо завершить настройку вручную."
-echo "Введите команду 'rclone config' и следуйте инструкциям."
-echo "Используйте следующую информацию для настройки:"
-echo " - Тип хранилища: onedrive"
-echo " - ID клиента и секрет клиента можно оставить пустыми, если у вас нет этих данных."
-echo " - Разрешения: read/write"
-echo " - Используйте автоконфигурацию для получения токенов доступа."
-echo "После завершения настройки скрипт продолжит работу автоматически."
+# Проверка конфигурации rclone
+if ! rclone config show onedrive; then
+    echo "Не удалось создать конфигурацию rclone для onedrive."
+    exit 1
+fi
 
 # Ждем завершения настройки rclone
 while ! rclone config show onedrive; do
